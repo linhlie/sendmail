@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Upload MultipartFile</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" >
+        <!-- Optional theme -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" >
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link href="../static/style.css" th:href="@{/form.css}"
+              rel="stylesheet" />
+        <script type="text/javascript" th:src="@{/js/jquery.min.js}"></script>
+        <script type="text/javascript" th:src="@{/plugin/tinymce/tinymce.min.js}"></script>
+        <script type="text/javascript" th:src="@{/plugin/tinymce/init-tinymce.js}"></script>
+        <script type="text/javascript" th:src="@{/js/getdata.js}"></script>
+        <script type="text/javascript" th:src="@{/js/dropzone.js}"></script>
+        <link
+                href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+                th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}"
+                rel="stylesheet" />
+        <!-- Custom style -->
+        <link href="../static/style.css" th:href="@{/style.css}"
+              rel="stylesheet" />
+        <link href="../static/css/basic.css" th:href="@{/css/basic.css}" rel="stylesheet" />
+        <link href="../static/css/dropzone.css" th:href="@{/css/dropzone.css} "rel="stylesheet" />
+        <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+        <script
+                src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"
+                th:src="@{/webjars/jquery/1.12.4/jquery.min.js}"></script>
+        <!-- Include all compiled plugins (below), or include individual files as needed -->
+        <script
+                src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+                th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
+        <style>
+            * {
+                box-sizing: border-box;
+                margin: 0;
+            }
+
+            body {
+                font-family: Arial, Helvetica, sans-serif;
+
+            }
+
+            /* Style the header */
+            header {
+                background-color: #b8843f;
+                padding: 0;
+                text-align: center;
+                font-size: 20px;
+                color: white;
+                width: 100%;
+                height: 50px;
+            }
+
+            /* Create two columns/boxes that floats next to each other */
+            nav {
+                float: left;
+                width: 20%;
+                height: 300px;
+                background: #d5cbcb;
+                padding: 20px;
+            }
+
+            /* Style the list inside the menu */
+            nav ul {
+                list-style-type: none;
+                padding: 0;
+            }
+
+            article {
+                float: left;
+                padding: 20px;
+                width: 70%;
+                height: 80%;
+                background-color: #f1f1f1;
+                height: 300px; /* only for demonstration, should be removed */
+            }
+
+            /* Clear floats after the columns */
+            section:after {
+                content: "";
+                display: table;
+                clear: both;
+            }
+
+
+            /* Responsive layout - makes the two columns/boxes stack on top of each other instead of next to each other, on small screens */
+            @media (max-width: 600px) {
+                nav, article {
+                    width: 100%;
+                    height: auto;
+                }
+            }
+        </style>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
+        	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+
+<section>
+    <nav>
+        <div class="row">
+            <div class="col-4">
+                <div class="list-group" id="list-tab" role="tablist">
+                    <a th:href="@{/list}" class="list-group-item list-group-item-action active" id="list-home-list" data-toggle="list" href="#list-home" role="tab" aria-controls="home">Home</a>
+                    <a th:href="@{/sent/form}" class="list-group-item list-group-item-action" id="list-profile-list" data-toggle="list" href="#list-profile" role="tab" aria-controls="profile">Send Mail</a>
+                    <a th:href="@{/sent} " class="list-group-item list-group-item-action" id="list-messages-list" data-toggle="list" href="#list-messages" role="tab" aria-controls="messages">Sent</a>
+                    <a class="list-group-item list-group-item-action" id="list-settings-list" data-toggle="list" href="#list-settings" role="tab" aria-controls="settings">Settings</a>
+                </div>
+            </div>
+
+        </div>
+    </nav>
+
+    <article>
+        <div class="panel-body">
+            <form id="reused_form" th:action="@{/sent/sentmailfile}" th:object="${sendMail}"method="POST" novalidate="novalidate"enctype="multipart/form-data">
+                <div class="form-group">
+                    <label><i class="fa fa-user" aria-hidden="true"></i> Title</label>
+                    <input type="text" class="form-control" th:field="*{title}" />
+                </div>
+                <div class="form-group">
+                    <label><i class="fa fa-envelope" aria-hidden="true"></i> Email</label>
+                    <input type="email" class="form-control" th:field="*{receiver}" />
+                </div>
+                <div class="form-group">
+                    <label><i class="fa fa-comment" aria-hidden="true"></i> Message</label>
+                    <textarea rows="3" class="tinymce" id="texteditor" th:field="*{content}"></textarea>
+                </div>
+                <div class="dz-preview dz-file-preview">
+                  <div class="dz-details">
+                    <div class="dz-filename"><span data-dz-name></span></div>
+                    <div class="dz-size" data-dz-size></div>
+                    <img data-dz-thumbnail />
+                  </div>
+                </div>
+                <div>Attached File </div>
+
+                <div class="container h-100">
+                		<div class="row h-100 justify-content-center align-items-center">
+                			<div class="col-md-7 table-responsive">
+                				<table id="customerTable" class="table">
+                					<thead>
+                						<tr>
+                							<th>No</th>
+                							<th>Filename</th>
+                							<th>Download</th>
+                						</tr>
+                					</thead>
+                					<tbody>
+                						<tr th:each="file, rowStat: ${files}">
+                					        <td th:text="${rowStat.count}">1</td>
+                							<td th:text="${file.filename}">File-Name</td>
+                					        <td><a th:href="${file.url}">Link</a></td>
+                					    </tr>
+                					</tbody>
+                				</table>
+                			</div>
+                		</div>
+                	</div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-raised btn-block btn-danger">Post</button>
+                </div>
+            </form>
+
+        </div>
+    </article>
+</section>
+</body>
+</html>

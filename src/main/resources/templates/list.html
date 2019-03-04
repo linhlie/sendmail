@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>CSS Template</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link
+            href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+            th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}"
+            rel="stylesheet" />
+    <!-- Custom style -->
+    <link href="../static/style.css" th:href="@{/style.css}"
+          rel="stylesheet" />
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script
+            src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"
+            th:src="@{/webjars/jquery/1.12.4/jquery.min.js}"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script
+            src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+            th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+
+        }
+
+        /* Style the header */
+        header {
+            background-color: #b8843f;
+            padding: 0;
+            text-align: center;
+            font-size: 20px;
+            color: white;
+            width: 100%;
+            height: 50px;
+        }
+
+        /* Create two columns/boxes that floats next to each other */
+        nav {
+            float: left;
+            width: 20%;
+            height: 300px;
+            background: #d5cbcb;
+            padding: 20px;
+        }
+
+        /* Style the list inside the menu */
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        article {
+            float: left;
+            padding: 20px;
+            width: 70%;
+            height: 80%;
+            background-color: #f1f1f1;
+            height: 300px; /* only for demonstration, should be removed */
+        }
+
+        /* Clear floats after the columns */
+        section:after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+
+
+        /* Responsive layout - makes the two columns/boxes stack on top of each other instead of next to each other, on small screens */
+        @media (max-width: 600px) {
+            nav, article {
+                width: 100%;
+                height: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+<header>
+    <h2>My Email</h2>
+</header>
+
+<section>
+    <nav>
+        <div class="row">
+            <div class="col-4">
+                <div class="list-group" id="list-tab" role="tablist">
+                    <a th:href="@{/list}" class="list-group-item list-group-item-action active" id="list-home-list" data-toggle="list" href="#list-home" role="tab" aria-controls="home">Home</a>
+                    <a th:href="@{/sent/form}" class="list-group-item list-group-item-action" id="list-profile-list" data-toggle="list" href="#list-profile" role="tab" aria-controls="profile">Send Mail</a>
+                    <a th:href="@{/sent} " class="list-group-item list-group-item-action" id="list-messages-list" data-toggle="list" href="#list-messages" role="tab" aria-controls="messages">Sent</a>
+                    <a class="list-group-item list-group-item-action" id="list-settings-list" data-toggle="list" href="#list-settings" role="tab" aria-controls="settings">Settings</a>
+                </div>
+            </div>
+
+        </div>
+    </nav>
+
+    <article>
+        <div class="row">
+            <table class="table table-bordered table-hover">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Subject</th>
+                    <th>From</th>
+                    <th>Text</th>
+                    <th>Read</th>
+                    <th>Delete</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr  th:each="list:${list}">
+                    <td th:text="${list.id}">Text ...</td>
+                    <td><div>
+                        <div  style="height: 40px;overflow: hidden"th:text="${list.subject}">
+                        </div>
+                    </div>
+                    <td><div>
+                    <div  style="height: 20px;overflow: hidden"th:text="${list.sender}">
+                    </div>
+                </div>
+                </td>
+                    <td><div>
+                        <div  style="height: 20px;overflow: hidden"th:text="${list.content}">
+                        </div>
+                    </div>
+                    </td>
+                    <td><a th:href="@{/demo/{id}/(id=${list.id})}">
+                        <span class="glyphicon glyphicon-envelope"></span>
+                    </a></td>
+                    <td><a th:href="@{/email/{id}/delete(id=${list.id})}"><span
+                            class="glyphicon glyphicon-trash"></span></a></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="row">
+            <div class="form-group col-md-1">
+                <select class="form-control pagination" id="pageSizeSelect">
+                    <option th:each="pageSize : ${pageSizes}" th:text="${pageSize}"
+                            th:value="${pageSize}"
+                            th:selected="${pageSize} == ${selectedPageSize}"></option>
+                </select>
+            </div>
+            <div th:if="${list.totalPages != 1}"
+                 class="form-group col-md-11 pagination-centered">
+                <ul class="pagination">
+                    <li th:class="${list.number == 0} ? disabled"><a
+                            class="pageLink"
+                            th:href="@{/list/(pageSize=${selectedPageSize}, page=1)}">«</a>
+                    </li>
+                    <li th:class="${list.number == 0} ? disabled"><a
+                            class="pageLink"
+                            th:href="@{/list/(pageSize=${selectedPageSize}, page=${list.number})}">←</a>
+                    </li>
+                    <li
+                            th:class="${list.number == (page - 1)} ? 'active pointer-disabled'"
+                            th:each="page : ${#numbers.sequence(pager.startPage, pager.endPage)}">
+                        <a class="pageLink"
+                           th:href="@{/list/(pageSize=${selectedPageSize}, page=${page})}"
+                           th:text="${page}"></a>
+                    </li>
+                    <li
+                            th:class="${list.number + 1 == list.totalPages} ? disabled">
+                        <a class="pageLink"
+                           th:href="@{/list/(pageSize=${selectedPageSize}, page=${list.number + 2})}">→</a>
+                    </li>
+                    <li
+                            th:class="${list.number + 1 == list.totalPages} ? disabled">
+                        <a class="pageLink"
+                           th:href="@{/list/(pageSize=${selectedPageSize}, page=${list.totalPages})}">»</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </article>
+    <script
+            src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+            crossorigin="anonymous"></script>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        $(document).ready(function() {
+            changePageAndSize();
+        });
+        function changePageAndSize() {
+            $('#pageSizeSelect').change(function(evt) {
+                window.location.replace("/list/?pageSize=" + this.value + "&page=1");
+            });
+        }
+        /*]]>*/
+    </script>
+</section>
+
+</body>
+</html>
